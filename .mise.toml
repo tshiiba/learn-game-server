@@ -7,9 +7,6 @@ grpcurl = "1.9.3" # gRPC 用のコマンドラインツール
 mysqldef = "3.9.4" # MySQL スキーマ管理ツール
 tbls = "1.92.3" # データベースドキュメント生成ツール
 
-[env]
-_.path = ["${MISE_BIN}"]
-
 [tasks.install-go-tools]
 description = "Install Go tools from tools.go"
 run = "cat tools.go | grep _ | awk -F'\"' '{print $2}' | xargs -I {} go install {}"
