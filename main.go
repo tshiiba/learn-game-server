@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main(){
+func main() {
 	added := add(3, 5)
 	fmt.Println("3 + 5 =", added)
 }
