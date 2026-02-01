@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.4.7
+    container_name: lgs-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - lgs-mysql-data:/var/lib/mysql
+
+volumes:
+  lgs-mysql-data:
