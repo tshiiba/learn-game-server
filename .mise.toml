@@ -1,5 +1,22 @@
 [tools]
 air = "1.64.4" # Go 用のライブリロードツール
+buf = "1.64.0" # Protocol Buffers 用のコード生成ツール
 go = "1.25.6" # プログラミング言語 Go のバージョン
 golangci-lint = "2.8.0" # Go 用の静的解析ツール
 mysqldef = "3.9.4" # MySQL スキーマ管理ツール
+tbls = "1.92.3" # データベースドキュメント生成ツール
+
+[env]
+_.path = ["${MISE_BIN}"]
+
+[tasks.install-go-tools]
+description = "Install Go tools from tools.go"
+run = "cat tools.go | grep _ | awk -F'\"' '{print $2}' | xargs -I {} go install {}"
+
+[tasks.migrate]
+description = "Run database migration"
+run = "mysqldef -u user -p password -h 127.0.0.1 -P 3306 db < migrations/schema.sql"
+
+[tasks.migrate-dry-run]
+description = "Dry run database migration"
+run = "mysqldef -u user -p password -h 127.0.0.1 -P 3306 db --dry-run < migrations/schema.sql"
