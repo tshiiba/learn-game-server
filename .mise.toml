@@ -5,6 +5,7 @@ go = "1.25.6" # プログラミング言語 Go のバージョン
 golangci-lint = "2.8.0" # Go 用の静的解析ツール
 grpcurl = "1.9.3" # gRPC 用のコマンドラインツール
 mysqldef = "3.9.4" # MySQL スキーマ管理ツール
+node = "24.13.0" # プログラミング言語 Node.js のバージョン
 tbls = "1.92.3" # データベースドキュメント生成ツール
 
 [tasks.install-go-tools]
