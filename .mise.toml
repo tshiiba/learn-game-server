@@ -1,5 +1,6 @@
 [tools]
 air = "1.64.4" # Go 用のライブリロードツール
+awscli = "2" # AWS CLI
 buf = "1.64.0" # Protocol Buffers 用のコード生成ツール
 go = "1.25.6" # プログラミング言語 Go のバージョン
 golangci-lint = "2.8.0" # Go 用の静的解析ツール
