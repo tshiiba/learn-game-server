@@ -22,10 +22,12 @@ function getSampleProtoPath(): string {
 type SampleServiceClient = grpc.Client & {
   Hello?: (
     req: { name?: string },
+    metadata: grpc.Metadata,
     cb: (err: grpc.ServiceError | null, res?: { message?: string }) => void,
   ) => void;
   hello?: (
     req: { name?: string },
+    metadata: grpc.Metadata,
     cb: (err: grpc.ServiceError | null, res?: { message?: string }) => void,
   ) => void;
 };
@@ -57,8 +59,12 @@ function createSampleServiceClient(): SampleServiceClient {
   return new serviceCtor(getGrpcAddress(), grpc.credentials.createInsecure()) as SampleServiceClient;
 }
 
-export async function callHello(name?: string): Promise<HelloResult> {
+export async function callHello(name?: string, authorization?: string): Promise<HelloResult> {
   const client = createSampleServiceClient();
+  const metadata = new grpc.Metadata();
+  if (authorization) {
+    metadata.set("authorization", authorization);
+  }
 
   try {
     const response = await new Promise<{ message?: string }>((resolve, reject) => {
@@ -68,7 +74,7 @@ export async function callHello(name?: string): Promise<HelloResult> {
         return;
       }
 
-      method.call(client, { name }, (err, res) => {
+      method.call(client, { name }, metadata, (err, res) => {
         if (err) {
           reject(err);
           return;

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	adminv1 "github.com/tshiiba/learn-game-server/gen/go/admin/v1"
+	"github.com/tshiiba/learn-game-server/internal/auth"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -26,7 +27,19 @@ func main() {
 		log.Fatalf("failed to listen on %s: %v", addr, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcOptions := make([]grpc.ServerOption, 0, 1)
+	authConfig := auth.LoadConfigFromEnv()
+	if authConfig.Enabled {
+		verifier, err := auth.NewVerifier(authConfig)
+		if err != nil {
+			log.Fatalf("failed to initialize auth verifier: %v", err)
+		}
+
+		grpcOptions = append(grpcOptions, grpc.UnaryInterceptor(auth.NewUnaryAuthInterceptor(verifier)))
+		log.Printf("gRPC auth enabled for issuer %s", authConfig.Issuer)
+	}
+
+	grpcServer := grpc.NewServer(grpcOptions...)
 	adminv1.RegisterSampleServiceServer(grpcServer, &sampleService{})
 	reflection.Register(grpcServer)
 

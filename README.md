@@ -139,3 +139,35 @@ npm run dev
 - これにより、ローカル開発中の CORS 問題を避けています
 - 認証には `USER_PASSWORD_AUTH` を使っています
 - ログイン成功後は `id_token` / `access_token` / `refresh_token` を画面に表示します
+
+## Backend JWT Verification
+
+Go の gRPC サーバーには Cognito JWT を検証する interceptor を追加しています。
+ただし既存の疎通を壊さないよう、認証はデフォルトで無効です。
+
+### 有効化する環境変数
+
+```bash
+export COGNITO_AUTH_ENABLED=true
+export COGNITO_ISSUER=http://localhost:9229/local_7Bsq4uKe
+export COGNITO_JWKS_URL=http://localhost:9229/local_7Bsq4uKe/.well-known/jwks.json
+export COGNITO_CLIENT_ID=2esekcy0c1amp6057k4k4l81k
+```
+
+`COGNITO_JWKS_URL` を省略した場合は `COGNITO_ISSUER/.well-known/jwks.json` を既定値として使います。
+
+### 現在の挙動
+
+- `COGNITO_AUTH_ENABLED=true` の時だけ gRPC unary interceptor が有効になります
+- `authorization: Bearer <token>` metadata が必須です
+- token の署名、issuer、client id を検証します
+- `token_use` は `access` または `id` を受け付けます
+- gRPC reflection は開発用に認証対象外です
+
+### 検証コマンド
+
+```bash
+go test ./...
+```
+
+`web/admin` 側の Route Handler は、受け取った `Authorization` header をそのまま Go gRPC 呼び出しへ転送できる状態です。

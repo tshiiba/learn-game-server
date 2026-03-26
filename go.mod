@@ -5,6 +5,7 @@ go 1.25.6
 tool github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.10
 )
