@@ -11,6 +11,9 @@ export default function HelloPage() {
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             Next.js Route Handler → Go gRPC (api.admin.v1.SampleService/Hello)
           </p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            token なしの拒否と、Cognito access token ありの成功を同じ画面で確認できます。
+          </p>
           <Link className="text-sm underline" href="/">
             ← Home
           </Link>
