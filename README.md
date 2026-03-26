@@ -93,8 +93,8 @@ aws \
 
 ## React Login Example
 
-`web/` 配下に最小の React サンプルを追加しています。
-このアプリは `amazon-cognito-identity-js` を使って `cognito-local` に直接ログインします。
+`web/admin-cognito` 配下にローカル認証確認用の React アプリを追加しています。
+このアプリは SDK v3 の `@aws-sdk/client-cognito-identity-provider` を使って `cognito-local` に直接ログインします。
 
 ### 1. Node.js を mise で入れる
 
@@ -105,16 +105,16 @@ mise install node
 ### 2. 依存関係をインストールする
 
 ```bash
-cd web
+cd web/admin-cognito
 npm install
 ```
 
 ### 3. 必要なら接続先を上書きする
 
-`web/.env.example` をベースに環境変数を設定できます。
+`web/admin-cognito/.env.example` をベースに環境変数を設定できます。
 
 ```bash
-cp web/.env.example web/.env.local
+cp web/admin-cognito/.env.example web/admin-cognito/.env.local
 ```
 
 既定値は、ここまでの手順で作成したローカル User Pool / App Client を指しています。
@@ -122,7 +122,7 @@ cp web/.env.example web/.env.local
 ### 4. 開発サーバーを起動する
 
 ```bash
-cd web
+cd web/admin-cognito
 npm run dev
 ```
 
@@ -137,4 +137,5 @@ npm run dev
 
 - ブラウザから `http://localhost:9229` を直接叩く代わりに、Vite の proxy で `/cognito` に流しています
 - これにより、ローカル開発中の CORS 問題を避けています
+- 認証には `USER_PASSWORD_AUTH` を使っています
 - ログイン成功後は `id_token` / `access_token` / `refresh_token` を画面に表示します

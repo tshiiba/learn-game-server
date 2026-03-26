@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# admin-cognito
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+`cognito-local` に対して SDK v3 で直接サインインするための検証用フロントエンドです。
 
-Currently, two official plugins are available:
+## 前提
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- リポジトリ直下で `docker compose up -d cognito-local` が起動していること
+- ローカル User Pool / App Client / test user が作成済みであること
+- デフォルト値はこのリポジトリで作成済みの local resource を指しています
 
-## React Compiler
+## 環境変数
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env.local
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+必要に応じて以下を上書きできます。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `VITE_COGNITO_ENDPOINT`
+- `VITE_COGNITO_REGION`
+- `VITE_COGNITO_USER_POOL_ID`
+- `VITE_COGNITO_CLIENT_ID`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+通常は `VITE_COGNITO_ENDPOINT=/cognito` のまま使います。
+Vite dev server が `http://localhost:9229` へ proxy するため、ブラウザから直接 local Cognito を叩かずに済みます。
+
+## 開発
+
+```bash
+npm install
+npm run dev
 ```
+
+ブラウザで `http://localhost:5173` を開き、以下の test user でログインします。
+
+- email: `test-user@example.com`
+- password: `TestPass123!`
+
+## 実装メモ
+
+- 認証 API 呼び出しは `src/auth/localCognitoAuth.ts` に隔離しています
+- 認証フローは `USER_PASSWORD_AUTH` です
+- 成功時は `idToken` / `accessToken` / `refreshToken` を画面へ表示します
+- token 永続化はまだ入れていません

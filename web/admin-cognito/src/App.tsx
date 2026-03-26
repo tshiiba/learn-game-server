@@ -1,120 +1,138 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, type FormEvent } from 'react'
+import { cognitoConfig } from './config'
+import { signIn, type SignInResult } from './auth/localCognitoAuth'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [email, setEmail] = useState('test-user@example.com')
+  const [password, setPassword] = useState('TestPass123!')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [result, setResult] = useState<SignInResult | null>(null)
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSubmitting(true)
+    setErrorMessage(null)
+
+    try {
+      const nextResult = await signIn({ username: email, password })
+      setResult(nextResult)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sign in failed.'
+      setErrorMessage(message)
+      setResult(null)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main className="app-shell">
+      <section className="hero-panel">
+        <p className="eyebrow">Local Cognito Verification</p>
+        <h1>SDK v3 で local Cognito に直接サインインする</h1>
+        <p className="lead">
+          `cognito-local` に対して `USER_PASSWORD_AUTH` を実行し、返却 token をそのまま確認します。
+        </p>
+
+        <dl className="config-grid">
+          <div>
+            <dt>Endpoint</dt>
+            <dd>{cognitoConfig.endpoint}</dd>
+          </div>
+          <div>
+            <dt>Region</dt>
+            <dd>{cognitoConfig.region}</dd>
+          </div>
+          <div>
+            <dt>User Pool</dt>
+            <dd>{cognitoConfig.userPoolId}</dd>
+          </div>
+          <div>
+            <dt>Client ID</dt>
+            <dd>{cognitoConfig.clientId}</dd>
+          </div>
+        </dl>
       </section>
 
-      <div className="ticks"></div>
+      <section className="surface">
+        <div className="surface-header">
+          <div>
+            <p className="section-label">Sign In</p>
+            <h2>Test user で認証確認</h2>
+          </div>
+          <span className="status-pill">{isSubmitting ? 'Authenticating' : 'Ready'}</span>
+        </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+        <form className="sign-in-form" onSubmit={handleSubmit}>
+          <label>
+            <span>Email</span>
+            <input
+              autoComplete="username"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="test-user@example.com"
+            />
+          </label>
+
+          <label>
+            <span>Password</span>
+            <input
+              autoComplete="current-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="TestPass123!"
+            />
+          </label>
+
+          <button className="submit-button" disabled={isSubmitting} type="submit">
+            {isSubmitting ? 'Signing in...' : 'Sign in with SDK v3'}
+          </button>
+        </form>
+
+        {errorMessage ? (
+          <div className="message error" role="alert">
+            {errorMessage}
+          </div>
+        ) : null}
+
+        {result ? (
+          <div className="result-stack">
+            <div className="message success">Authentication succeeded.</div>
+
+            <article className="token-card">
+              <div className="token-header">
+                <h3>ID Token</h3>
+                <span>{result.expiresIn}s</span>
+              </div>
+              <pre>{result.idToken}</pre>
+            </article>
+
+            <article className="token-card">
+              <div className="token-header">
+                <h3>Access Token</h3>
+                <span>{result.tokenType}</span>
+              </div>
+              <pre>{result.accessToken}</pre>
+            </article>
+
+            <article className="token-card">
+              <div className="token-header">
+                <h3>Refresh Token</h3>
+              </div>
+              <pre>{result.refreshToken}</pre>
+            </article>
+          </div>
+        ) : (
+          <div className="empty-state">
+            Sign in が成功すると token がここに表示されます。
+          </div>
+        )}
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 
