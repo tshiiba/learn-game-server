@@ -55,8 +55,8 @@ type jwkKey struct {
 }
 
 func LoadConfigFromEnv() Config {
-	issuer := getenv("COGNITO_ISSUER", "http://localhost:9229/local_7Bsq4uKe")
-	jwksURL := getenv("COGNITO_JWKS_URL", issuer+"/.well-known/jwks.json")
+	issuer := getenv("COGNITO_ISSUER", "http://0.0.0.0:9229/local_7Bsq4uKe")
+	jwksURL := getenv("COGNITO_JWKS_URL", "http://localhost:9229/local_7Bsq4uKe/.well-known/jwks.json")
 
 	return Config{
 		Enabled:  strings.EqualFold(os.Getenv("COGNITO_AUTH_ENABLED"), "true"),

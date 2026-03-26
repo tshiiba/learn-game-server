@@ -149,7 +149,7 @@ Go の gRPC サーバーには Cognito JWT を検証する interceptor を追加
 
 ```bash
 export COGNITO_AUTH_ENABLED=true
-export COGNITO_ISSUER=http://localhost:9229/local_7Bsq4uKe
+export COGNITO_ISSUER=http://0.0.0.0:9229/local_7Bsq4uKe
 export COGNITO_JWKS_URL=http://localhost:9229/local_7Bsq4uKe/.well-known/jwks.json
 export COGNITO_CLIENT_ID=2esekcy0c1amp6057k4k4l81k
 ```
@@ -163,6 +163,7 @@ export COGNITO_CLIENT_ID=2esekcy0c1amp6057k4k4l81k
 - token の署名、issuer、client id を検証します
 - `token_use` は `access` または `id` を受け付けます
 - gRPC reflection は開発用に認証対象外です
+- `cognito-local` が発行する token の `iss` は `http://0.0.0.0:9229/...` になるため、backend の issuer もそれに合わせる必要があります
 
 ### 検証コマンド
 
