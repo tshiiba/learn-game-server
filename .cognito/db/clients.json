@@ -1,0 +1,20 @@
+{
+  "Clients": {
+    "2esekcy0c1amp6057k4k4l81k": {
+      "ClientId": "2esekcy0c1amp6057k4k4l81k",
+      "ClientName": "local-web-client",
+      "CreationDate": "2026-03-25T08:01:50.805Z",
+      "ExplicitAuthFlows": [
+        "ALLOW_USER_PASSWORD_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH"
+      ],
+      "LastModifiedDate": "2026-03-25T08:01:50.805Z",
+      "TokenValidityUnits": {
+        "AccessToken": "hours",
+        "IdToken": "minutes",
+        "RefreshToken": "days"
+      },
+      "UserPoolId": "local_7Bsq4uKe"
+    }
+  }
+}
