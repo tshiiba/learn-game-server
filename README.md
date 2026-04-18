@@ -41,7 +41,79 @@ docker compose up -d cognito-local
 docker compose ps cognito-local
 ```
 
-### 2. frontend 依存を入れる
+### 2. User Pool / App Client / test user を作成
+
+`cognito-local` の操作にはダミーの AWS 環境変数を使います。
+
+```bash
+export AWS_ACCESS_KEY_ID=local
+export AWS_SECRET_ACCESS_KEY=local
+export AWS_DEFAULT_REGION=ap-northeast-1
+```
+
+User Pool を作成:
+
+```bash
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp create-user-pool \
+  --pool-name local-user-pool
+```
+
+App Client を作成:
+
+```bash
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp create-user-pool-client \
+  --user-pool-id <USER_POOL_ID> \
+  --client-name local-web-client \
+  --explicit-auth-flows ALLOW_USER_PASSWORD_AUTH ALLOW_REFRESH_TOKEN_AUTH
+```
+
+test user を作成して permanent password を設定:
+
+```bash
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp admin-create-user \
+  --user-pool-id <USER_POOL_ID> \
+  --username test-user@example.com \
+  --user-attributes Name=email,Value=test-user@example.com Name=email_verified,Value=true \
+  --message-action SUPPRESS
+
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp admin-set-user-password \
+  --user-pool-id <USER_POOL_ID> \
+  --username test-user@example.com \
+  --password TestPass123! \
+  --permanent
+```
+
+作成確認:
+
+```bash
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp list-user-pools \
+  --max-results 10
+
+aws \
+  --endpoint-url http://localhost:9229 \
+  cognito-idp list-user-pool-clients \
+  --user-pool-id <USER_POOL_ID> \
+  --max-results 10
+```
+
+このリポジトリでは現在の既定値として以下を使っています。
+
+- User Pool ID: `local_7Bsq4uKe`
+- App Client ID: `2esekcy0c1amp6057k4k4l81k`
+- Test user: `test-user@example.com`
+- Password: `TestPass123!`
+
+### 3. frontend 依存を入れる
 
 ```bash
 cd web/admin-cognito
@@ -51,7 +123,7 @@ cd ../admin
 npm install
 ```
 
-### 3. admin-cognito の env を必要に応じて作成
+### 4. admin-cognito の env を必要に応じて作成
 
 ```bash
 cd /home/t-shiiba/dev/learn-game-server

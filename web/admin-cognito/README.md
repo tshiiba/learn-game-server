@@ -1,6 +1,6 @@
 # admin-cognito
 
-`cognito-local` に対して SDK v3 で直接サインインするための検証用フロントエンドです。
+`cognito-local` に対して SDK v3 で直接サインインするための検証用フロントエンドです。起動直後はログイン画面を表示し、認証成功後に token を確認する管理画面へ切り替わります。
 
 ## 前提
 
@@ -31,7 +31,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで `http://localhost:5173` を開き、以下の test user でログインします。
+ブラウザで `http://localhost:5173` を開くと、最初にログイン画面が表示されます。以下の test user でログインしてください。
 
 - email: `test-user@example.com`
 - password: `TestPass123!`
@@ -40,5 +40,5 @@ npm run dev
 
 - 認証 API 呼び出しは `src/auth/localCognitoAuth.ts` に隔離しています
 - 認証フローは `USER_PASSWORD_AUTH` です
-- 成功時は `idToken` / `accessToken` / `refreshToken` を画面へ表示します
-- token 永続化はまだ入れていません
+- 成功時は管理画面へ遷移し、`idToken` / `accessToken` / `refreshToken` を表示します
+- token 永続化はまだ入れていないため、再読み込みするとログイン画面から始まります

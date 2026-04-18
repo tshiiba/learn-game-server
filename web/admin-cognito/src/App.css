@@ -1,6 +1,8 @@
 .app-shell {
-  display: flex;
-  align-items: start;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.05fr);
+  align-items: stretch;
   gap: 28px;
   padding: 56px;
   box-sizing: border-box;
@@ -13,10 +15,12 @@
 
 .hero-panel,
 .surface {
-  width: min(100%, 1120px);
+  width: 100%;
 }
 
 .hero-panel {
+  display: grid;
+  align-content: start;
   padding: 36px;
   border: 1px solid var(--border);
   border-radius: 28px;
@@ -38,6 +42,20 @@
 .lead {
   max-width: 60ch;
   font-size: 1.05rem;
+}
+
+.hero-panel-login {
+  min-height: calc(100svh - 112px);
+
+  @media (max-width: 1024px) {
+    min-height: auto;
+  }
+}
+
+.hero-panel-dashboard {
+  background:
+    radial-gradient(circle at top right, rgba(180, 83, 9, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(255, 247, 237, 0.95), rgba(255, 255, 255, 0.92));
 }
 
 .config-grid {
@@ -74,12 +92,26 @@
 }
 
 .surface {
+  display: grid;
+  align-content: start;
   padding: 32px;
   border-radius: 28px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.84);
   box-shadow: var(--panel-shadow);
   backdrop-filter: blur(14px);
+}
+
+.login-surface {
+  align-self: center;
+}
+
+.dashboard-surface {
+  min-height: calc(100svh - 112px);
+
+  @media (max-width: 1024px) {
+    min-height: auto;
+  }
 }
 
 .surface-header {
@@ -163,6 +195,22 @@
   cursor: wait;
 }
 
+.secondary-button {
+  padding: 12px 16px;
+  border: 1px solid rgba(180, 83, 9, 0.24);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--text-strong);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  border-color: rgba(180, 83, 9, 0.44);
+  background: rgba(255, 251, 235, 0.96);
+}
+
 .message {
   margin-top: 18px;
   padding: 14px 16px;
@@ -182,10 +230,26 @@
   border: 1px solid rgba(22, 101, 52, 0.18);
 }
 
+.compact-message {
+  margin-top: 0;
+}
+
 .result-stack {
   display: grid;
   gap: 16px;
-  margin-top: 18px;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .token-card {
@@ -237,4 +301,13 @@
   border-radius: 18px;
   color: var(--muted);
   background: rgba(255, 255, 255, 0.55);
+}
+
+.login-note {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 248, 235, 0.8);
+  border: 1px solid rgba(217, 119, 6, 0.14);
+  color: var(--muted);
 }
